@@ -26,7 +26,23 @@ let persons = [
 ];
 
 app.get("/api/persons", (req, res) => {
-  return res.json(persons);
+  res.json(persons);
+});
+
+app.get("/api/persons/:id", (req, res) => {
+  const id = Number(req.params.id);
+  const found = persons.find((person) => person.id === id);
+  if (found) {
+    res.json(found);
+  } else {
+    res.status(404).json({ error: "Not found" });
+  }
+});
+
+app.get("/info", (req, res) => {
+  return res.send(`Phonebook has info for ${persons.length} people
+    ${new Date()}
+  `);
 });
 
 app.listen(port, () => {
