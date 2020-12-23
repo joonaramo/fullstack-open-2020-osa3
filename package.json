@@ -1,0 +1,26 @@
+{
+  "name": "fullstack-open-2020-osa3",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.6"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joonaramo/fullstack-open-2020-osa3.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/joonaramo/fullstack-open-2020-osa3/issues"
+  },
+  "homepage": "https://github.com/joonaramo/fullstack-open-2020-osa3#readme"
+}
