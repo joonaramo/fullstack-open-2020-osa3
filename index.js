@@ -41,13 +41,13 @@ app.delete("/api/persons/:id", (req, res) => {
 
 app.post("/api/persons", async (req, res) => {
   const { name, number } = req.body;
-  if (!body.name || !body.number) {
+  if (!name || !number) {
     return res.status(400).json({
       error: "missing name or number",
     });
   }
 
-  const newPerson = newPerson({
+  const newPerson = new Person({
     name,
     number,
   });
