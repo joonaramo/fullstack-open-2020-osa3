@@ -18,9 +18,13 @@ app.use(
 app.use(express.json());
 app.use(cors());
 
-app.get("/api/persons", async (req, res) => {
-  const persons = await Person.find();
-  res.json(persons);
+app.get("/api/persons", async (req, res, next) => {
+  try {
+    const persons = await Person.find();
+    res.json(persons);
+  } catch (err) {
+    next(err);
+  }
 });
 
 app.get("/api/persons/:id", (req, res) => {
@@ -33,16 +37,16 @@ app.get("/api/persons/:id", (req, res) => {
   }
 });
 
-app.delete("/api/persons/:id", async (req, res) => {
+app.delete("/api/persons/:id", async (req, res, next) => {
   try {
     await Person.findByIdAndRemove(req.params.id);
     res.status(204).end();
   } catch (err) {
-    console.log(err);
+    next(err);
   }
 });
 
-app.post("/api/persons", async (req, res) => {
+app.post("/api/persons", async (req, res, next) => {
   const { name, number } = req.body;
   if (!name || !number) {
     return res.status(400).json({
@@ -55,8 +59,12 @@ app.post("/api/persons", async (req, res) => {
     number,
   });
 
-  const person = await newPerson.save();
-  res.json(person);
+  try {
+    const person = await newPerson.save();
+    res.json(person);
+  } catch (err) {
+    next(err);
+  }
 });
 
 app.get("/info", (req, res) => {
@@ -64,6 +72,24 @@ app.get("/info", (req, res) => {
     ${new Date()}
   `);
 });
+
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: "unknown endpoint" });
+};
+
+app.use(unknownEndpoint);
+
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message);
+
+  if (error.name === "CastError") {
+    return response.status(400).send({ error: "malformatted id" });
+  }
+
+  next(error);
+};
+
+app.use(errorHandler);
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
