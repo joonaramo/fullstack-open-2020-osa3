@@ -67,6 +67,29 @@ app.post("/api/persons", async (req, res, next) => {
   }
 });
 
+app.put("/api/persons/:id", async (req, res, next) => {
+  const { name, number } = req.body;
+  if (!name || !number) {
+    return res.status(400).json({
+      error: "missing name or number",
+    });
+  }
+  const person = {
+    name,
+    number,
+  };
+  try {
+    const updatedPerson = await Person.findByIdAndUpdate(
+      req.params.id,
+      person,
+      { new: true }
+    );
+    res.json(updatedPerson);
+  } catch (err) {
+    next(err);
+  }
+});
+
 app.get("/info", (req, res) => {
   return res.send(`Phonebook has info for ${persons.length} people
     ${new Date()}
