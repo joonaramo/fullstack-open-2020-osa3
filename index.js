@@ -27,13 +27,15 @@ app.get("/api/persons", async (req, res, next) => {
   }
 });
 
-app.get("/api/persons/:id", (req, res) => {
-  const id = Number(req.params.id);
-  const found = persons.find((person) => person.id === id);
-  if (found) {
-    res.json(found);
-  } else {
-    res.status(404).end();
+app.get("/api/persons/:id", async (req, res, next) => {
+  try {
+    const person = await Person.findById(req.params.id);
+    if (!person) {
+      return res.status(404).end();
+    }
+    res.json(person);
+  } catch (err) {
+    next(err);
   }
 });
 
@@ -90,8 +92,9 @@ app.put("/api/persons/:id", async (req, res, next) => {
   }
 });
 
-app.get("/info", (req, res) => {
-  return res.send(`Phonebook has info for ${persons.length} people
+app.get("/info", async (req, res) => {
+  const count = await Person.estimatedDocumentCount();
+  return res.send(`Phonebook has info for ${count} people
     ${new Date()}
   `);
 });
