@@ -1,7 +1,7 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 if (process.argv.length < 3) {
-  console.log("give password as argument");
+  console.log('give password as argument');
   process.exit(1);
 }
 
@@ -21,13 +21,13 @@ const personSchema = new mongoose.Schema({
   number: String,
 });
 
-const Person = mongoose.model("Person", personSchema);
+const Person = mongoose.model('Person', personSchema);
 
 const name = process.argv[3];
 const number = process.argv[4];
 
 if (!name && !number) {
-  console.log("phonebook:");
+  console.log('phonebook:');
   const getAllPersons = async () => {
     const persons = await Person.find();
     persons.map((person) => console.log(person.name, person.number));

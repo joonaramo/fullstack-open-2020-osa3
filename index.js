@@ -1,24 +1,24 @@
-require("dotenv").config();
-const express = require("express");
-const morgan = require("morgan");
-const cors = require("cors");
+require('dotenv').config();
+const express = require('express');
+const morgan = require('morgan');
+const cors = require('cors');
 const app = express();
 const port = process.env.PORT;
 
-const Person = require("./models/person");
+const Person = require('./models/person');
 
-morgan.token("body", function (req, res) {
+morgan.token('body', function (req) {
   return JSON.stringify(req.body);
 });
 
-app.use(express.static("build"));
+app.use(express.static('build'));
 app.use(
-  morgan(":method :url :status :res[content-length] - :response-time ms :body")
+  morgan(':method :url :status :res[content-length] - :response-time ms :body')
 );
 app.use(express.json());
 app.use(cors());
 
-app.get("/api/persons", async (req, res, next) => {
+app.get('/api/persons', async (req, res, next) => {
   try {
     const persons = await Person.find();
     res.json(persons);
@@ -27,7 +27,7 @@ app.get("/api/persons", async (req, res, next) => {
   }
 });
 
-app.get("/api/persons/:id", async (req, res, next) => {
+app.get('/api/persons/:id', async (req, res, next) => {
   try {
     const person = await Person.findById(req.params.id);
     if (!person) {
@@ -39,7 +39,7 @@ app.get("/api/persons/:id", async (req, res, next) => {
   }
 });
 
-app.delete("/api/persons/:id", async (req, res, next) => {
+app.delete('/api/persons/:id', async (req, res, next) => {
   try {
     await Person.findByIdAndRemove(req.params.id);
     res.status(204).end();
@@ -48,11 +48,11 @@ app.delete("/api/persons/:id", async (req, res, next) => {
   }
 });
 
-app.post("/api/persons", async (req, res, next) => {
+app.post('/api/persons', async (req, res, next) => {
   const { name, number } = req.body;
   if (!name || !number) {
     return res.status(400).json({
-      error: "missing name or number",
+      error: 'missing name or number',
     });
   }
 
@@ -69,11 +69,11 @@ app.post("/api/persons", async (req, res, next) => {
   }
 });
 
-app.put("/api/persons/:id", async (req, res, next) => {
+app.put('/api/persons/:id', async (req, res, next) => {
   const { name, number } = req.body;
   if (!name || !number) {
     return res.status(400).json({
-      error: "missing name or number",
+      error: 'missing name or number',
     });
   }
   const person = {
@@ -92,7 +92,7 @@ app.put("/api/persons/:id", async (req, res, next) => {
   }
 });
 
-app.get("/info", async (req, res) => {
+app.get('/info', async (req, res) => {
   const count = await Person.estimatedDocumentCount();
   return res.send(`Phonebook has info for ${count} people
     ${new Date()}
@@ -100,7 +100,7 @@ app.get("/info", async (req, res) => {
 });
 
 const unknownEndpoint = (request, response) => {
-  response.status(404).send({ error: "unknown endpoint" });
+  response.status(404).send({ error: 'unknown endpoint' });
 };
 
 app.use(unknownEndpoint);
@@ -108,9 +108,9 @@ app.use(unknownEndpoint);
 const errorHandler = (error, request, response, next) => {
   console.error(error.message);
 
-  if (error.name === "CastError") {
-    return response.status(400).send({ error: "malformatted id" });
-  } else if (error.name === "ValidationError") {
+  if (error.name === 'CastError') {
+    return response.status(400).send({ error: 'malformatted id' });
+  } else if (error.name === 'ValidationError') {
     return response.status(400).json({ error: error.message });
   }
 
